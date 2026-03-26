@@ -1,31 +1,24 @@
-# ShopGrid Full-Stack E-commerce
+# ShopGrid Fullstack E-Commerce
 
-A production-style starter e-commerce project with:
+ShopGrid is a full-stack e-commerce web application with a responsive storefront and an Express API backend. The project includes product browsing, category filtering, cart management, account authentication, and order placement with persisted data.
 
-- A static, multi-page storefront (HTML/CSS/JavaScript)
-- A Node.js + Express backend API
-- Persistent data storage in JSON (users, carts, orders)
-- Auth flow with JWT
+## Features
 
-## What Was Improved
+- Multi-page storefront: home, shop, product, cart, checkout, and login/register
+- Category and search-based product discovery
+- JWT-based authentication (register, login, protected routes)
+- User-specific cart sync with backend storage
+- Order creation and order history APIs
+- Shared product catalog across frontend and backend
 
-This project was refactored from a flat frontend-only structure into a cleaner full-stack layout.
+## Tech Stack
 
-### Before
+- Frontend: HTML, CSS, Vanilla JavaScript
+- Backend: Node.js, Express
+- Authentication: JSON Web Tokens (JWT), bcryptjs
+- Data layer: file-based JSON persistence
 
-- All files at root level
-- Frontend-only data handling
-- Auth/cart/order state mostly in `localStorage`
-
-### After
-
-- Separated frontend and backend
-- Added API for auth, products, cart, and orders
-- Added persistent backend storage (`backend/data/database.json`)
-- Frontend auth and checkout now write to backend
-- Legacy snapshot files moved to `frontend/public/legacy`
-
-## Folder Structure
+## Project Structure
 
 ```text
 .
@@ -59,20 +52,43 @@ This project was refactored from a flat frontend-only structure into a cleaner f
 │       ├── shop.html
 │       ├── style.css
 │       └── legacy/
-│           ├── kiro.html
-│           └── main.html
 ├── package.json
 └── README.md
 ```
 
-## Tech Stack
+## Getting Started
 
-- Frontend: HTML, CSS, Vanilla JavaScript
-- Backend: Node.js, Express
-- Auth: JWT + bcryptjs
-- Storage: JSON file on disk
+### Prerequisites
 
-## API Overview
+- Node.js 18+
+- npm 9+
+
+### Installation
+
+```bash
+npm run install:all
+```
+
+### Environment Setup
+
+Create `backend/.env` from `backend/.env.example` and set:
+
+```env
+PORT=4000
+JWT_SECRET=replace-with-a-strong-secret
+```
+
+### Run the Application
+
+```bash
+npm run dev
+```
+
+App URL:
+
+- http://localhost:4000
+
+## API Reference
 
 Base URL: `http://localhost:4000`
 
@@ -84,16 +100,22 @@ Base URL: `http://localhost:4000`
 
 - `POST /api/auth/register`
 - `POST /api/auth/login`
-- `GET /api/auth/me` (Bearer token required)
+- `GET /api/auth/me` (requires Bearer token)
 
 ### Products
 
 - `GET /api/products`
 - `GET /api/products/:id`
 
-Supported product query params:
+Query parameters for `GET /api/products`:
 
-- `q`, `cat`, `minPrice`, `maxPrice`, `sort`, `page`, `limit`
+- `q`: search text
+- `cat`: category
+- `minPrice`: minimum price
+- `maxPrice`: maximum price
+- `sort`: `featured | price-asc | price-desc | rating | discount`
+- `page`: page number
+- `limit`: page size
 
 ### Cart (Authenticated)
 
@@ -105,70 +127,39 @@ Supported product query params:
 - `GET /api/orders`
 - `POST /api/orders`
 
-## Setup
-
-### 1. Install dependencies
-
-```bash
-npm run install:all
-```
-
-### 2. Configure environment
-
-Copy `backend/.env.example` to `backend/.env` and set values:
-
-```env
-PORT=4000
-JWT_SECRET=replace-with-a-strong-secret
-```
-
-### 3. Run development server
-
-```bash
-npm run dev
-```
-
-### 4. Open app
-
-Open in browser:
-
-- `http://localhost:4000`
-
 ## Data Persistence
 
-All persisted backend data is stored in:
+Application data is stored in:
 
 - `backend/data/database.json`
 
-This includes:
+Stored entities:
 
-- Registered users (with hashed passwords)
-- Per-user carts
+- Users (password hashes only)
+- Carts (per user)
 - Orders
 
-## Important Notes
+## Available Scripts
 
-- Product catalog is still sourced from `frontend/public/data.js`.
-- Backend product routes read the same catalog to keep frontend and backend data aligned.
-- Checkout now requires login to store orders on backend.
-
-## Production Hardening Suggestions
-
-- Move JSON storage to PostgreSQL or MongoDB
-- Add input validation middleware (`zod`/`joi`)
-- Add rate limiting and helmet
-- Add refresh tokens and token rotation
-- Add automated tests for routes and core flows
-
-## Scripts
-
-Root scripts:
+Root:
 
 - `npm run install:all` - install backend dependencies
-- `npm run dev` - run backend in watch mode
-- `npm run start` - run backend in normal mode
+- `npm run dev` - run backend in development mode
+- `npm run start` - run backend in production mode
 
-Backend scripts:
+Backend:
 
 - `npm --prefix backend run dev`
 - `npm --prefix backend run start`
+
+## Roadmap
+
+- Database migration (PostgreSQL or MongoDB)
+- Input validation and schema enforcement
+- Security middleware (helmet, rate limiting)
+- Automated API and integration tests
+- CI/CD pipeline for deployment
+
+## License
+
+This project is available for educational and portfolio use.
