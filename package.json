@@ -1,0 +1,11 @@
+{
+  "name": "shopgrid-fullstack",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Full-stack ShopGrid e-commerce project",
+  "scripts": {
+    "dev": "npm --prefix backend run dev",
+    "start": "npm --prefix backend start",
+    "install:all": "npm --prefix backend install"
+  }
+}

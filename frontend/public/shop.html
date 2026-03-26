@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Shop — ShopGrid India</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<div id="navbar-placeholder"></div>
+
+<div class="breadcrumb-bar"><div class="breadcrumb-inner"><a href="index.html">Home</a> <span>›</span> <span id="bc-label">All Products</span></div></div>
+
+<div class="shop-layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sb-card">
+      <h3>Department</h3>
+      <label class="sb-row"><input type="checkbox" data-cat="Books" checked/> 📚 Books</label>
+      <label class="sb-row"><input type="checkbox" data-cat="Electronics" checked/> ⚡ Electronics</label>
+      <label class="sb-row"><input type="checkbox" data-cat="Furniture" checked/> 🪑 Furniture</label>
+      <label class="sb-row"><input type="checkbox" data-cat="Notes" checked/> 📝 Notes</label>
+      <label class="sb-row"><input type="checkbox" data-cat="Watches" checked/> ⌚ Watches</label>
+      <label class="sb-row"><input type="checkbox" data-cat="Clothing" checked/> 👕 Clothing</label>
+      <label class="sb-row"><input type="checkbox" data-cat="Footwear" checked/> 👟 Footwear</label>
+      <label class="sb-row"><input type="checkbox" data-cat="Beauty" checked/> 💄 Beauty</label>
+      <label class="sb-row"><input type="checkbox" data-cat="Bags" checked/> 👜 Bags</label>
+    </div>
+    <div class="sb-card">
+      <h3>Max Price</h3>
+      <input type="range" class="price-slider" id="priceSlider" min="0" max="50000" value="50000"/>
+      <p class="price-val">Up to: <strong id="priceVal">₹50,000</strong></p>
+    </div>
+    <div class="sb-card">
+      <h3>Avg. Customer Review</h3>
+      <div class="star-row on" data-min="0"><span class="st">★★★★★</span> All Stars</div>
+      <div class="star-row" data-min="4"><span class="st">★★★★☆</span> 4 &amp; Up</div>
+      <div class="star-row" data-min="4.5"><span class="st">★★★★½</span> 4.5 &amp; Up</div>
+    </div>
+    <div class="sb-card">
+      <h3>Availability</h3>
+      <label class="sb-row"><input type="checkbox" id="inStockOnly"/> In Stock Only</label>
+      <label class="sb-row"><input type="checkbox" id="primeOnly"/> ✦ Prime Eligible</label>
+      <label class="sb-row"><input type="checkbox" id="onSaleOnly"/> On Sale Only</label>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="shop-main">
+    <div class="cat-pills" id="catPills">
+      <button class="pill on" data-cat="All">All</button>
+      <button class="pill" data-cat="Books">📚 Books</button>
+      <button class="pill" data-cat="Electronics">⚡ Electronics</button>
+      <button class="pill" data-cat="Furniture">🪑 Furniture</button>
+      <button class="pill" data-cat="Notes">📝 Notes</button>
+      <button class="pill" data-cat="Watches">⌚ Watches</button>
+      <button class="pill" data-cat="Clothing">👕 Clothing</button>
+      <button class="pill" data-cat="Footwear">👟 Footwear</button>
+      <button class="pill" data-cat="Beauty">💄 Beauty</button>
+      <button class="pill" data-cat="Bags">👜 Bags</button>
+    </div>
+    <div class="toolbar">
+      <p class="res-count" id="resCount">Showing <strong>0</strong> products</p>
+      <select class="sort-sel" id="sortSel">
+        <option value="featured">Sort: Featured</option>
+        <option value="price-asc">Price: Low to High</option>
+        <option value="price-desc">Price: High to Low</option>
+        <option value="rating">Avg. Customer Review</option>
+        <option value="discount">Biggest Discount</option>
+      </select>
+    </div>
+    <div class="grid" id="grid"></div>
+  </main>
+</div>
+
+<div id="footer-placeholder"></div>
+<div id="cart-drawer-placeholder"></div>
+<div class="toast hidden" id="toast"></div>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+<script>
+  loadNavbar(); loadFooter(); loadCartDrawer();
+  const inr = n => '₹' + Number(n).toLocaleString('en-IN');
+  const starsHtml = r => { const f=Math.floor(r),h=r%1>=.5?1:0,e=5-f-h; return '★'.repeat(f)+(h?'½':'')+('☆'.repeat(e)); };
+
+  let activeCat='All', searchQuery='', maxPrice=50000, minRating=0;
+
+  // Read URL params
+  const params = new URLSearchParams(location.search);
+  if(params.get('cat')) { activeCat = params.get('cat'); document.getElementById('bc-label').textContent = activeCat; }
+  if(params.get('filter')==='sale') { document.getElementById('onSaleOnly').checked=true; }
+  if(params.get('sort')==='rating') { document.getElementById('sortSel').value='rating'; }
+
+  // Sync pill active state
+  document.querySelectorAll('.pill').forEach(b => {
+    b.classList.toggle('on', b.dataset.cat === activeCat);
+    b.addEventListener('click', () => {
+      document.querySelectorAll('.pill').forEach(x=>x.classList.remove('on'));
+      b.classList.add('on'); activeCat=b.dataset.cat;
+      document.getElementById('bc-label').textContent = activeCat==='All'?'All Products':activeCat;
+      applyFilters();
+    });
+  });
+
+  function applyFilters() {
+    let list = products.filter(p => {
+      const catOk = activeCat==='All' || p.cat===activeCat;
+      const qOk = !searchQuery || p.title.toLowerCase().includes(searchQuery) || p.seller.toLowerCase().includes(searchQuery);
+      const priceOk = p.price <= maxPrice;
+      const rOk = p.rating >= minRating;
+      const stockOk = !document.getElementById('inStockOnly').checked || p.inStock;
+      const primeOk = !document.getElementById('primeOnly').checked || p.prime;
+      const saleOk = !document.getElementById('onSaleOnly').checked || p.badge==='sale';
+      return catOk&&qOk&&priceOk&&rOk&&stockOk&&primeOk&&saleOk;
+    });
+    const s = document.getElementById('sortSel').value;
+    if(s==='price-asc') list.sort((a,b)=>a.price-b.price);
+    if(s==='price-desc') list.sort((a,b)=>b.price-a.price);
+    if(s==='rating') list.sort((a,b)=>b.rating-a.rating);
+    if(s==='discount') list.sort((a,b)=>((b.was?b.was-b.price:0)-(a.was?a.was-a.price:0)));
+    renderGrid(list);
+  }
+
+  function renderGrid(list) {
+    document.getElementById('resCount').innerHTML = `Showing <strong>${list.length}</strong> product${list.length!==1?'s':''}`;
+    if(!list.length) { document.getElementById('grid').innerHTML=`<div class="empty"><span>🔍</span><h3>No products found</h3><p>Try adjusting your filters.</p></div>`; return; }
+    document.getElementById('grid').innerHTML = list.map(p => {
+      const save = p.was?Math.round((1-p.price/p.was)*100):0;
+      return `<a href="product.html?id=${p.id}" class="card">
+        <div class="card-img">
+          ${p.badge?`<span class="cbadge b-${p.badge}">${p.badge==='sale'?'Sale':p.badge==='new'?'New':'Top'}</span>`:''}
+          <button class="wish" onclick="event.preventDefault();toggleWish(this,${p.id})" aria-label="Wishlist">♡</button>
+          <img src="${p.img}" alt="${p.title}" loading="lazy" onerror="this.style.display='none'"/>
+        </div>
+        <div class="card-body">
+          <span class="card-cat">${p.cat}</span>
+          <h2 class="card-title">${p.title}</h2>
+          <p class="card-seller">by <span>${p.seller}</span></p>
+          <div class="rating-row"><span class="stars">${starsHtml(p.rating)}</span><span class="rcount">${p.rating} (${p.reviews.toLocaleString('en-IN')})</span></div>
+          <div class="price-row">
+            <span class="price">${inr(p.price)}</span>
+            ${p.was?`<span class="was">${inr(p.was)}</span><span class="off">-${save}%</span>`:''}
+          </div>
+          ${p.prime?`<div class="prime">✦ Prime FREE Delivery</div>`:''}
+          ${!p.inStock?`<div class="low">⚠ Only 2 left</div>`:''}
+          <div class="card-actions">
+            <button class="btn-cart" onclick="event.preventDefault();quickAdd(${p.id},this)">Add to Cart</button>
+            <button class="btn-buy" onclick="event.preventDefault();location.href='product.html?id=${p.id}'">Buy Now</button>
+          </div>
+        </div>
+      </a>`;
+    }).join('');
+  }
+
+  function quickAdd(id, btn) {
+    const p=products.find(x=>x.id===id); if(!p) return;
+    addToCartItem(p,1);
+    btn.textContent='✓ Added'; btn.classList.add('done');
+    setTimeout(()=>{btn.textContent='Add to Cart';btn.classList.remove('done');},1500);
+  }
+
+  function toggleWish(btn,id) {
+    btn.classList.toggle('on'); btn.textContent=btn.classList.contains('on')?'♥':'♡';
+    showToast(btn.classList.contains('on')?'♥ Added to Wishlist':'Removed from Wishlist');
+  }
+
+  document.getElementById('priceSlider').addEventListener('input',e=>{maxPrice=+e.target.value;document.getElementById('priceVal').textContent='₹'+Number(maxPrice).toLocaleString('en-IN');applyFilters();});
+  document.querySelectorAll('.star-row').forEach(r=>r.addEventListener('click',()=>{document.querySelectorAll('.star-row').forEach(x=>x.classList.remove('on'));r.classList.add('on');minRating=+r.dataset.min;applyFilters();}));
+  ['inStockOnly','primeOnly','onSaleOnly'].forEach(id=>document.getElementById(id).addEventListener('change',applyFilters));
+  document.getElementById('sortSel').addEventListener('change',applyFilters);
+  window.shopSearch = q => { searchQuery=q.toLowerCase().trim(); applyFilters(); };
+
+  applyFilters();
+</script>
+</body>
+</html>

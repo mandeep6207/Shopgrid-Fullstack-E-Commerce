@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Checkout — ShopGrid India</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<div id="navbar-placeholder"></div>
+
+<div class="breadcrumb-bar"><div class="breadcrumb-inner"><a href="index.html">Home</a> <span>›</span> <a href="cart.html">Cart</a> <span>›</span> <span>Checkout</span></div></div>
+
+<!-- STEPS -->
+<div class="checkout-steps">
+  <div class="step done">✓ Cart</div>
+  <div class="step-line"></div>
+  <div class="step active">📋 Details</div>
+  <div class="step-line"></div>
+  <div class="step">💳 Payment</div>
+  <div class="step-line"></div>
+  <div class="step">✓ Confirm</div>
+</div>
+
+<div class="checkout-layout">
+  <!-- FORM -->
+  <div class="checkout-form-col">
+    <div class="form-section">
+      <h3>📦 Delivery Address</h3>
+      <div class="form-row-2">
+        <div class="form-group"><label>Full Name *</label><input type="text" id="custName" placeholder="Rahul Sharma"/></div>
+        <div class="form-group"><label>Phone Number *</label><input type="tel" id="custPhone" placeholder="+91 98765 43210"/></div>
+      </div>
+      <div class="form-group"><label>Email Address</label><input type="email" id="custEmail" placeholder="rahul@email.com"/></div>
+      <div class="form-row-2">
+        <div class="form-group"><label>Pincode *</label><input type="text" id="custPin" placeholder="490001" maxlength="6"/></div>
+        <div class="form-group"><label>City</label><input type="text" id="custCity" value="Bhilai"/></div>
+      </div>
+      <div class="form-group"><label>State</label><input type="text" id="custState" value="Chhattisgarh"/></div>
+      <div class="form-group"><label>Full Address *</label><textarea id="custAddress" rows="3" placeholder="House No., Street, Area, Landmark">Bhilai, Chhattisgarh 490001</textarea></div>
+    </div>
+
+    <div class="form-section">
+      <h3>💳 Payment Method</h3>
+      <div class="payment-opts">
+        <label class="pay-card"><input type="radio" name="payment" value="COD" checked onchange="togglePayFields()"/>
+          <div class="pay-icon">💵</div><div><p class="pay-title">Cash on Delivery</p><p class="pay-sub">Pay when you receive</p></div></label>
+        <label class="pay-card"><input type="radio" name="payment" value="UPI" onchange="togglePayFields()"/>
+          <div class="pay-icon">📲</div><div><p class="pay-title">UPI Payment</p><p class="pay-sub">GPay, PhonePe, Paytm</p></div></label>
+        <label class="pay-card"><input type="radio" name="payment" value="CARD" onchange="togglePayFields()"/>
+          <div class="pay-icon">💳</div><div><p class="pay-title">Credit / Debit Card</p><p class="pay-sub">Visa, Mastercard, RuPay</p></div></label>
+        <label class="pay-card"><input type="radio" name="payment" value="NB" onchange="togglePayFields()"/>
+          <div class="pay-icon">🏦</div><div><p class="pay-title">Net Banking</p><p class="pay-sub">All major banks</p></div></label>
+      </div>
+      <div id="upiField" class="form-group hidden" style="margin-top:12px"><label>UPI ID</label><input type="text" id="upiId" placeholder="yourname@upi"/></div>
+      <div id="cardFields" class="hidden" style="margin-top:12px">
+        <div class="form-group"><label>Card Number</label><input type="text" id="cardNum" placeholder="1234 5678 9012 3456" maxlength="19"/></div>
+        <div class="form-row-2">
+          <div class="form-group"><label>Expiry</label><input type="text" id="cardExp" placeholder="MM/YY" maxlength="5"/></div>
+          <div class="form-group"><label>CVV</label><input type="text" id="cardCvv" placeholder="•••" maxlength="3"/></div>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn btn-primary full-w place-btn" onclick="placeOrder()">
+      Place Order — <span id="btnTotal">₹0</span>
+    </button>
+    <p style="text-align:center;font-size:.78rem;color:var(--muted);margin-top:10px">🔒 Your payment info is encrypted and secure</p>
+  </div>
+
+  <!-- SUMMARY -->
+  <aside class="checkout-summary-col">
+    <div class="summary-box">
+      <h3>Order Summary (<span id="itemCount">0</span> items)</h3>
+      <div id="summaryItems"></div>
+      <div class="summary-divider"></div>
+      <div class="summary-row"><span>Subtotal</span><span id="subtotal">₹0</span></div>
+      <div class="summary-row"><span>Shipping</span><span class="free-tag">FREE</span></div>
+      <div class="summary-row" id="discRow" style="display:none"><span>Discount</span><span class="free-tag" id="discAmt"></span></div>
+      <div class="summary-divider"></div>
+      <div class="summary-row total-row"><span>Total</span><span id="orderTotal">₹0</span></div>
+    </div>
+    <div class="trust-badges">
+      <div class="trust-item">🔒 SSL Secured</div>
+      <div class="trust-item">🚚 Free Delivery</div>
+      <div class="trust-item">↩ Easy Returns</div>
+      <div class="trust-item">⭐ 4.8 Rated</div>
+    </div>
+  </aside>
+</div>
+
+<!-- ORDER CONFIRMED MODAL -->
+<div class="confirm-overlay hidden" id="confirmOverlay"></div>
+<div class="confirm-modal hidden" id="confirmModal">
+  <div class="confirm-check">✓</div>
+  <h2>Order Confirmed!</h2>
+  <p id="confirmMsg"></p>
+  <div class="confirm-meta" id="confirmMeta"></div>
+  <div style="display:flex;gap:10px;margin-top:4px">
+    <a href="index.html" class="btn btn-primary full-w">Continue Shopping</a>
+    <a href="shop.html" class="btn btn-outline full-w">Browse More</a>
+  </div>
+</div>
+
+<div id="footer-placeholder"></div>
+<div class="toast hidden" id="toast"></div>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+<script>
+  loadNavbar(); loadFooter();
+  const inr = n => '₹' + Number(n).toLocaleString('en-IN');
+
+  function renderSummary() {
+    const cart = getCart();
+    const total = cart.reduce((s,i)=>s+i.price*i.qty,0);
+    const savings = cart.reduce((s,i)=>s+(i.was?(i.was-i.price)*i.qty:0),0);
+    document.getElementById('itemCount').textContent = cart.reduce((s,i)=>s+i.qty,0);
+    document.getElementById('subtotal').textContent = inr(total);
+    document.getElementById('orderTotal').textContent = inr(total);
+    document.getElementById('btnTotal').textContent = inr(total);
+    if(savings>0){document.getElementById('discRow').style.display='flex';document.getElementById('discAmt').textContent='-'+inr(savings);}
+    document.getElementById('summaryItems').innerHTML = cart.map(i=>`
+      <div class="summary-row">
+        <span style="display:flex;align-items:center;gap:8px">
+          <img src="${i.img}" style="width:36px;height:36px;object-fit:contain;border-radius:4px;background:#f7f8fa" onerror="this.style.display='none'"/>
+          <span style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${i.title} ×${i.qty}</span>
+        </span>
+        <span>${inr(i.price*i.qty)}</span>
+      </div>`).join('');
+  }
+
+  function togglePayFields() {
+    const val = document.querySelector('input[name="payment"]:checked').value;
+    document.getElementById('upiField').classList.toggle('hidden', val!=='UPI');
+    document.getElementById('cardFields').classList.toggle('hidden', val!=='CARD');
+  }
+
+  function placeOrder() {
+    const name=document.getElementById('custName').value.trim();
+    const phone=document.getElementById('custPhone').value.trim();
+    const address=document.getElementById('custAddress').value.trim();
+    if(!name){showToast('⚠ Please enter your full name');return;}
+    if(!phone){showToast('⚠ Please enter your phone number');return;}
+    if(!address){showToast('⚠ Please enter your delivery address');return;}
+    const cart=getCart();
+    if(!cart.length){showToast('⚠ Your cart is empty');return;}
+
+    if(!getAuthToken()){
+      showToast('⚠ Please login to place your order');
+      setTimeout(()=>location.href='login.html',900);
+      return;
+    }
+
+    const payment=document.querySelector('input[name="payment"]:checked').value;
+    const payload = {
+      items: cart,
+      payment,
+      address: {
+        name,
+        phone,
+        email: document.getElementById('custEmail').value.trim(),
+        pin: document.getElementById('custPin').value.trim(),
+        city: document.getElementById('custCity').value.trim(),
+        state: document.getElementById('custState').value.trim(),
+        fullAddress: address
+      }
+    };
+
+    apiRequest('/api/orders', {
+      method:'POST',
+      body: JSON.stringify(payload)
+    }).then(({ data }) => {
+      document.getElementById('confirmMsg').textContent=`Thank you, ${name}! Your order has been placed successfully.`;
+      document.getElementById('confirmMeta').innerHTML=`
+        <strong>Order ID:</strong> ${data.id}<br/>
+        <strong>Items:</strong> ${cart.reduce((s,i)=>s+i.qty,0)} item(s)<br/>
+        <strong>Total:</strong> ${inr(data.total)}<br/>
+        <strong>Payment:</strong> ${payment}<br/>
+        <strong>Deliver to:</strong> ${address}<br/>
+        <strong>Estimated Delivery:</strong> 2–4 business days`;
+
+      document.getElementById('confirmOverlay').classList.remove('hidden');
+      document.getElementById('confirmModal').classList.remove('hidden');
+      saveCart([]);
+      document.getElementById('cartCount').textContent='0';
+    }).catch(err => {
+      showToast('⚠ '+err.message);
+    });
+  }
+
+  document.getElementById('confirmOverlay').addEventListener('click',()=>{
+    document.getElementById('confirmOverlay').classList.add('hidden');
+    document.getElementById('confirmModal').classList.add('hidden');
+    location.href='index.html';
+  });
+
+  const currentUser = getCurrentUser();
+  if(currentUser){
+    document.getElementById('custName').value = [currentUser.firstName, currentUser.lastName].filter(Boolean).join(' ');
+    document.getElementById('custEmail').value = currentUser.email || '';
+    document.getElementById('custPhone').value = currentUser.phone || '';
+  }
+
+  syncCartFromServer().then(renderSummary).catch(renderSummary);
+</script>
+</body>
+</html>

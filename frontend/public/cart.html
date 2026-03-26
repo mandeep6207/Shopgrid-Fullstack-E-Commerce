@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Cart — ShopGrid India</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<div id="navbar-placeholder"></div>
+
+<div class="breadcrumb-bar"><div class="breadcrumb-inner"><a href="index.html">Home</a> <span>›</span> <span>Cart</span></div></div>
+
+<div class="cart-page-layout" id="cartPageLayout">
+  <!-- CART ITEMS -->
+  <div class="cart-items-col">
+    <div class="cart-page-head">
+      <h2>Shopping Cart</h2>
+      <button class="clear-btn" onclick="clearCart()">Clear All</button>
+    </div>
+    <div id="cartPageItems"></div>
+    <div class="cart-empty hidden" id="cartEmpty">
+      <span>🛒</span>
+      <h3>Your cart is empty</h3>
+      <p>Looks like you haven't added anything yet.</p>
+      <a href="shop.html" class="btn btn-primary">Continue Shopping</a>
+    </div>
+  </div>
+
+  <!-- ORDER SUMMARY -->
+  <aside class="cart-summary-col">
+    <div class="summary-box">
+      <h3>Order Summary</h3>
+      <div id="summaryLines"></div>
+      <div class="summary-divider"></div>
+      <div class="summary-row"><span>Shipping</span><span class="free-tag">FREE</span></div>
+      <div class="summary-row" id="savingsRow" style="display:none"><span>You Save</span><span class="free-tag" id="savingsAmt"></span></div>
+      <div class="summary-divider"></div>
+      <div class="summary-row total-row"><span>Total</span><span id="cartPageTotal">₹0</span></div>
+      <a href="checkout.html" class="btn btn-primary full-w" id="checkoutBtn" style="margin-top:16px;display:flex;justify-content:center">Proceed to Checkout →</a>
+      <a href="shop.html" class="btn btn-outline full-w" style="margin-top:10px;display:flex;justify-content:center">Continue Shopping</a>
+      <p class="secure-note">🔒 Secure & Encrypted Checkout</p>
+    </div>
+    <!-- PROMO CODE -->
+    <div class="summary-box" style="margin-top:14px">
+      <h3>Promo Code</h3>
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <input type="text" id="promoInput" placeholder="Enter code" style="flex:1;border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-size:.85rem;outline:none"/>
+        <button class="btn btn-primary" onclick="applyPromo()" style="padding:9px 16px">Apply</button>
+      </div>
+      <p id="promoMsg" style="font-size:.78rem;margin-top:6px"></p>
+    </div>
+  </aside>
+</div>
+
+<!-- RECOMMENDED -->
+<section class="section-wrap" style="margin-top:32px">
+  <div class="section-head"><h2>You May Also Like</h2><a href="shop.html" class="see-all">See All →</a></div>
+  <div class="product-row" id="recRow"></div>
+</section>
+
+<div id="footer-placeholder"></div>
+<div class="toast hidden" id="toast"></div>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+<script>
+  loadNavbar(); loadFooter();
+  const inr = n => '₹' + Number(n).toLocaleString('en-IN');
+  const starsHtml = r => { const f=Math.floor(r),h=r%1>=.5?1:0,e=5-f-h; return '★'.repeat(f)+(h?'½':'')+('☆'.repeat(e)); };
+
+  function renderCartPage() {
+    const cart = getCart();
+    const empty = document.getElementById('cartEmpty');
+    const layout = document.getElementById('cartPageItems');
+    const checkoutBtn = document.getElementById('checkoutBtn');
+
+    if(!cart.length) {
+      layout.innerHTML=''; empty.classList.remove('hidden'); checkoutBtn.style.pointerEvents='none'; checkoutBtn.style.opacity='.5';
+      document.getElementById('cartPageTotal').textContent='₹0';
+      document.getElementById('summaryLines').innerHTML='';
+      return;
+    }
+    empty.classList.add('hidden'); checkoutBtn.style.pointerEvents=''; checkoutBtn.style.opacity='';
+
+    layout.innerHTML = cart.map(item=>`
+      <div class="cart-page-item" id="ci-${item.id}">
+        <a href="product.html?id=${item.id}"><img src="${item.img}" alt="${item.title}" onerror="this.style.display='none'"/></a>
+        <div class="cpi-info">
+          <a href="product.html?id=${item.id}" class="cpi-title">${item.title}</a>
+          <p class="cpi-seller">Sold by ${item.seller}</p>
+          ${item.prime?'<p class="prime">✦ Prime FREE Delivery</p>':''}
+          <p class="cpi-price">${inr(item.price)} ${item.was?`<span class="was">${inr(item.was)}</span>`:''}</p>
+          <div class="cpi-actions">
+            <div class="qty-ctrl">
+              <button onclick="updateQty(${item.id},-1)">−</button>
+              <span>${item.qty}</span>
+              <button onclick="updateQty(${item.id},1)">+</button>
+            </div>
+            <button class="remove-btn" onclick="removeItem(${item.id})">🗑 Remove</button>
+            <button class="save-btn" onclick="saveForLater(${item.id})">Save for Later</button>
+          </div>
+        </div>
+        <div class="cpi-subtotal">${inr(item.price*item.qty)}</div>
+      </div>`).join('');
+
+    const total = cart.reduce((s,i)=>s+i.price*i.qty,0);
+    const savings = cart.reduce((s,i)=>s+(i.was?(i.was-i.price)*i.qty:0),0);
+    document.getElementById('cartPageTotal').textContent = inr(total);
+    document.getElementById('summaryLines').innerHTML = cart.map(i=>`<div class="summary-row"><span style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${i.title} ×${i.qty}</span><span>${inr(i.price*i.qty)}</span></div>`).join('');
+    if(savings>0) { document.getElementById('savingsRow').style.display='flex'; document.getElementById('savingsAmt').textContent=inr(savings); }
+    document.getElementById('cartCount').textContent = cart.reduce((s,i)=>s+i.qty,0);
+  }
+
+  function updateQty(id,d) {
+    const cart=getCart(); const item=cart.find(i=>i.id===id); if(!item) return;
+    item.qty=Math.max(1,item.qty+d); saveCart(cart); renderCartPage();
+  }
+  function removeItem(id) { saveCart(getCart().filter(i=>i.id!==id)); renderCartPage(); showToast('Item removed'); }
+  function clearCart() { saveCart([]); renderCartPage(); showToast('Cart cleared'); }
+  function saveForLater(id) { removeItem(id); showToast('Saved for later'); }
+
+  function applyPromo() {
+    const code = document.getElementById('promoInput').value.trim().toUpperCase();
+    const msg = document.getElementById('promoMsg');
+    if(code==='GRID10') { msg.textContent='✓ 10% discount applied!'; msg.style.color='#1a9e5c'; }
+    else if(code==='BHILAI') { msg.textContent='✓ Special Bhilai offer applied!'; msg.style.color='#1a9e5c'; }
+    else { msg.textContent='✗ Invalid promo code'; msg.style.color='#c0392b'; }
+  }
+
+  function renderRecommendations() {
+    const cart = getCart();
+    const cats = [...new Set(cart.map(i=>i.cat))];
+    const rec = products.filter(p=>cats.includes(p.cat)&&!cart.find(i=>i.id===p.id)).slice(0,8);
+    const fallback = rec.length?rec:products.slice(0,8);
+    document.getElementById('recRow').innerHTML = fallback.map(p=>`
+      <a href="product.html?id=${p.id}" class="mini-card">
+        <div class="mini-img"><img src="${p.img}" alt="${p.title}" loading="lazy" onerror="this.style.display='none'"/></div>
+        <div class="mini-body">
+          <h3 class="mini-title">${p.title}</h3>
+          <div class="price-row"><span class="price">${inr(p.price)}</span></div>
+        </div>
+      </a>`).join('');
+  }
+
+  syncCartFromServer().then(() => {
+    renderCartPage();
+    renderRecommendations();
+  }).catch(() => {
+    renderCartPage();
+    renderRecommendations();
+  });
+</script>
+</body>
+</html>

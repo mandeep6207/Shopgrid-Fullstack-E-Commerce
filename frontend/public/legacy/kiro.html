@@ -1,0 +1,382 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ShopGrid — Online Store</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#131921;--navy2:#232f3e;--accent:#f5a623;--orange:#f90;--red:#c0392b;
+  --green:#1a9e5c;--blue:#0369a1;--text:#111827;--muted:#6b7280;
+  --border:#e2e6ea;--bg:#f0f2f5;--white:#fff;--star:#FBBF24;
+  --r:8px;--r2:12px;--r3:20px;
+  --s1:0 1px 3px rgba(0,0,0,.08);--s2:0 4px 16px rgba(0,0,0,.12);--s3:0 8px 32px rgba(0,0,0,.16);
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+/* TOPBAR */
+.topbar{background:var(--navy);height:64px;padding:0 28px;display:flex;align-items:center;gap:18px;position:sticky;top:0;z-index:200;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.logo{font-size:1.55rem;font-weight:800;color:var(--accent);white-space:nowrap;flex-shrink:0;letter-spacing:-.5px}
+.logo em{color:#fff;font-style:normal}
+.location{font-size:.72rem;color:#ccc;line-height:1.4;white-space:nowrap;flex-shrink:0}
+.location strong{color:#fff;display:block;font-size:.82rem}
+.search-wrap{flex:1;max-width:580px;display:flex;height:40px;border-radius:var(--r3);overflow:hidden;border:2px solid transparent;transition:border-color .2s}
+.search-wrap:focus-within{border-color:var(--accent)}
+.search-cat{background:#e8eaed;border:none;padding:0 12px;font-size:.78rem;color:#333;cursor:pointer;border-right:1px solid #ccc;white-space:nowrap;outline:none}
+.search-wrap input{flex:1;border:none;outline:none;padding:0 14px;font-size:.93rem;background:#fff}
+.search-btn{background:var(--orange);border:none;padding:0 18px;cursor:pointer;display:flex;align-items:center;transition:background .2s}
+.search-btn:hover{background:#e08800}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:18px;flex-shrink:0}
+.tb-link{color:#fff;font-size:.76rem;line-height:1.4;cursor:pointer;white-space:nowrap}
+.tb-link strong{display:block;font-size:.88rem;font-weight:700}
+.cart-wrap{display:flex;align-items:center;gap:7px;color:#fff;font-weight:700;font-size:.9rem;cursor:pointer;position:relative;padding:6px 12px;border:1.5px solid rgba(255,255,255,.25);border-radius:var(--r);transition:border-color .2s}
+.cart-wrap:hover{border-color:var(--accent)}
+.cart-count{background:var(--red);color:#fff;border-radius:50%;width:19px;height:19px;font-size:.65rem;font-weight:800;display:flex;align-items:center;justify-content:center;position:absolute;top:-8px;right:6px}
+
+/* SUBNAV */
+.subnav{background:var(--navy2);padding:0 28px;display:flex;gap:2px;overflow-x:auto}
+.subnav::-webkit-scrollbar{display:none}
+.snav{color:rgba(255,255,255,.8);font-size:.82rem;padding:9px 13px;white-space:nowrap;cursor:pointer;border-bottom:2px solid transparent;transition:all .18s}
+.snav:hover{color:#fff;border-color:var(--accent)}
+.snav.bold{font-weight:700;color:#fff}
+
+/* PROMO */
+.promo{background:linear-gradient(90deg,#1a1a2e,#0f3460);padding:13px 28px;display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap}
+.promo-tag{background:var(--red);color:#fff;font-size:.68rem;font-weight:700;padding:3px 10px;border-radius:var(--r3);text-transform:uppercase;letter-spacing:.5px}
+.promo-text{color:#fff;font-size:.88rem}
+.promo-text strong{color:var(--accent)}
+.promo-btn{background:var(--accent);color:#111;border:none;padding:6px 16px;border-radius:var(--r3);font-size:.8rem;font-weight:700;cursor:pointer;transition:background .2s}
+.promo-btn:hover{background:#e09a1a}
+
+/* DEAL STRIP */
+.deal-strip{background:#fff;border-bottom:1px solid var(--border);padding:10px 28px;display:flex;gap:10px;overflow-x:auto}
+.deal-strip::-webkit-scrollbar{display:none}
+.deal-chip{flex-shrink:0;display:flex;align-items:center;gap:8px;padding:6px 14px;border:1.5px solid var(--border);border-radius:var(--r3);font-size:.8rem;font-weight:600;cursor:pointer;transition:all .18s;background:#fff}
+.deal-chip:hover{border-color:var(--orange);color:var(--orange)}
+.deal-chip img{width:28px;height:28px;object-fit:contain;border-radius:4px}
+
+/* PAGE */
+.page{display:flex;gap:22px;max-width:1400px;margin:24px auto;padding:0 22px;align-items:flex-start}
+
+/* SIDEBAR */
+.sidebar{width:218px;flex-shrink:0;display:flex;flex-direction:column;gap:14px}
+.sb-card{background:var(--white);border-radius:var(--r2);padding:16px;box-shadow:var(--s1);border:1px solid var(--border)}
+.sb-card h3{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:11px;padding-bottom:9px;border-bottom:1px solid var(--border)}
+.sb-row{display:flex;align-items:center;gap:9px;font-size:.86rem;padding:4px 0;cursor:pointer;transition:color .15s}
+.sb-row:hover{color:var(--red)}
+.sb-row input{accent-color:var(--navy);width:14px;height:14px}
+.price-slider{width:100%;accent-color:var(--navy);margin:8px 0 4px}
+.price-val{font-size:.8rem;color:var(--muted)}
+.price-val strong{color:var(--text)}
+.star-row{display:flex;align-items:center;gap:6px;font-size:.84rem;padding:4px 0;cursor:pointer;color:var(--muted);transition:color .15s}
+.star-row:hover,.star-row.on{color:var(--text);font-weight:600}
+.st{color:var(--star);font-size:.82rem}
+
+/* MAIN */
+.main{flex:1;min-width:0}
+.cat-pills{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.pill{padding:7px 18px;border-radius:var(--r3);border:1.5px solid var(--border);background:var(--white);font-size:.83rem;font-weight:600;cursor:pointer;transition:all .18s;color:var(--text)}
+.pill:hover{border-color:var(--navy);color:var(--navy)}
+.pill.on{background:var(--navy);border-color:var(--navy);color:#fff}
+.toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px}
+.res-count{font-size:.85rem;color:var(--muted)}
+.res-count strong{color:var(--text)}
+.sort-sel{border:1.5px solid var(--border);border-radius:var(--r);padding:7px 11px;font-size:.84rem;background:var(--white);cursor:pointer;outline:none;color:var(--text)}
+.sort-sel:focus{border-color:var(--navy)}
+
+/* GRID */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px}
+
+/* CARD */
+.card{background:var(--white);border-radius:var(--r2);border:1px solid var(--border);overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--s1);transition:box-shadow .22s,transform .22s;cursor:pointer}
+.card:hover{box-shadow:var(--s3);transform:translateY(-4px)}
+
+/* CARD IMAGE — real product photo via picsum/unsplash */
+.card-img{width:100%;height:200px;position:relative;overflow:hidden;background:#f7f8fa;flex-shrink:0}
+.card-img img{width:100%;height:100%;object-fit:contain;padding:12px;transition:transform .3s}
+.card:hover .card-img img{transform:scale(1.06)}
+.cbadge{position:absolute;top:10px;left:10px;font-size:.66rem;font-weight:700;padding:3px 9px;border-radius:4px;text-transform:uppercase;letter-spacing:.4px;z-index:1}
+.b-sale{background:var(--red);color:#fff}
+.b-new{background:var(--green);color:#fff}
+.b-top{background:var(--orange);color:#111}
+.wish{position:absolute;top:9px;right:9px;background:rgba(255,255,255,.9);border:none;border-radius:50%;width:32px;height:32px;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .18s;color:#bbb;box-shadow:0 1px 4px rgba(0,0,0,.12);z-index:1}
+.wish:hover{color:var(--red);background:#fff}
+.wish.on{color:var(--red);background:#fff}
+
+/* CARD BODY */
+.card-body{padding:12px 13px 14px;display:flex;flex-direction:column;gap:4px;flex:1}
+.card-cat{font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)}
+.card-title{font-size:.9rem;font-weight:600;line-height:1.35;color:var(--text);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card-seller{font-size:.74rem;color:var(--muted)}
+.card-seller a{color:var(--blue);text-decoration:none;font-weight:500}
+.card-seller a:hover{text-decoration:underline}
+.rating-row{display:flex;align-items:center;gap:5px;margin-top:1px}
+.stars{color:var(--star);font-size:.84rem;letter-spacing:.5px}
+.rcount{font-size:.74rem;color:var(--blue)}
+.price-row{display:flex;align-items:baseline;gap:7px;margin-top:3px;flex-wrap:wrap}
+.price{font-size:1.18rem;font-weight:800;color:var(--text)}
+.price sup{font-size:.65rem;vertical-align:super;font-weight:700}
+.was{font-size:.78rem;color:var(--muted);text-decoration:line-through}
+.off{font-size:.74rem;color:var(--red);font-weight:700}
+.prime{font-size:.7rem;font-weight:700;color:#0284c7;margin-top:1px}
+.low{font-size:.72rem;color:var(--red);font-weight:600}
+.card-actions{display:flex;gap:7px;margin-top:9px}
+.btn-cart{flex:1;padding:9px 4px;background:var(--accent);color:#111;border:none;border-radius:var(--r3);font-size:.8rem;font-weight:700;cursor:pointer;transition:background .18s}
+.btn-cart:hover{background:#e09a1a}
+.btn-cart.done{background:var(--green);color:#fff}
+.btn-buy{flex:1;padding:9px 4px;background:#ffd814;color:#111;border:none;border-radius:var(--r3);font-size:.8rem;font-weight:700;cursor:pointer;transition:background .18s}
+.btn-buy:hover{background:#f0c800}
+
+/* EMPTY */
+.empty{grid-column:1/-1;text-align:center;padding:70px 20px;color:var(--muted)}
+.empty span{font-size:3rem;display:block;margin-bottom:12px}
+.empty h3{font-size:1.05rem;color:var(--text);margin-bottom:5px}
+
+/* FOOTER */
+footer{background:var(--navy2);color:rgba(255,255,255,.55);margin-top:48px}
+.ft-back{background:var(--navy);color:#fff;text-align:center;padding:13px;font-size:.84rem;cursor:pointer;font-weight:500}
+.ft-back:hover{background:#1e2a38}
+.ft-cols{max-width:1400px;margin:0 auto;padding:28px 28px;display:flex;gap:28px;flex-wrap:wrap;justify-content:space-between}
+.ft-col h4{color:#fff;font-size:.86rem;font-weight:700;margin-bottom:11px}
+.ft-col a{display:block;font-size:.8rem;color:rgba(255,255,255,.5);text-decoration:none;margin-bottom:6px}
+.ft-col a:hover{color:#fff}
+.ft-bottom{border-top:1px solid rgba(255,255,255,.1);text-align:center;padding:13px;font-size:.76rem}
+
+/* RESPONSIVE */
+@media(max-width:960px){.sidebar{display:none}.page{padding:0 12px}}
+@media(max-width:600px){.topbar{padding:0 12px;gap:10px;height:auto;flex-wrap:wrap;padding:10px 12px}.location{display:none}.grid{grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:10px}}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="logo">Shop<em>Grid</em></div>
+  <div class="location"><span>Deliver to</span><strong>📍 Mumbai 400001</strong></div>
+  <div class="search-wrap" role="search">
+    <select class="search-cat" aria-label="Category">
+      <option>All</option><option>Books</option><option>Electronics</option><option>Furniture</option><option>Notes</option>
+    </select>
+    <input type="text" id="searchInput" placeholder="Search products, brands and more…" aria-label="Search"/>
+    <button class="search-btn" aria-label="Search">
+      <svg width="18" height="18" fill="none" stroke="#111" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </button>
+  </div>
+  <div class="topbar-right">
+    <div class="tb-link"><span>Hello, Sign in</span><strong>Account &amp; Lists ▾</strong></div>
+    <div class="tb-link"><span>Returns</span><strong>&amp; Orders</strong></div>
+    <div class="cart-wrap" aria-label="Cart">
+      <span class="cart-count" id="cartCount">0</span>
+      <svg width="22" height="22" fill="none" stroke="#fff" stroke-width="1.8" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      <span>Cart</span>
+    </div>
+  </div>
+</header>
+
+<!-- SUBNAV -->
+<nav class="subnav">
+  <span class="snav bold">☰ All</span>
+  <span class="snav">Today's Deals</span>
+  <span class="snav">Customer Service</span>
+  <span class="snav">Registry</span>
+  <span class="snav">Gift Cards</span>
+  <span class="snav bold" style="color:var(--accent)">🔥 Best Sellers</span>
+  <span class="snav">New Arrivals</span>
+  <span class="snav">Prime</span>
+  <span class="snav">Sell</span>
+</nav>
+
+<!-- PROMO -->
+<div class="promo">
+  <span class="promo-tag">Limited Time</span>
+  <span class="promo-text">🎉 <strong>Summer Sale — Up to 40% OFF</strong> on Electronics &amp; Furniture</span>
+  <button class="promo-btn">Shop Now →</button>
+</div>
+
+<!-- DEAL STRIP -->
+<div class="deal-strip">
+  <div class="deal-chip"><img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=60&h=60&fit=crop" alt="Books"/>Books</div>
+  <div class="deal-chip"><img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=60&h=60&fit=crop" alt="Headphones"/>Headphones</div>
+  <div class="deal-chip"><img src="https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=60&h=60&fit=crop" alt="Keyboard"/>Keyboards</div>
+  <div class="deal-chip"><img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=60&h=60&fit=crop" alt="Furniture"/>Furniture</div>
+  <div class="deal-chip"><img src="https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=60&h=60&fit=crop" alt="Laptops"/>Laptops</div>
+  <div class="deal-chip"><img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=60&h=60&fit=crop" alt="Notes"/>Study Notes</div>
+  <div class="deal-chip"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=60&h=60&fit=crop" alt="Webcam"/>Webcams</div>
+  <div class="deal-chip"><img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=60&h=60&fit=crop" alt="Chairs"/>Chairs</div>
+</div>
+
+<!-- PAGE -->
+<div class="page">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" aria-label="Filters">
+    <div class="sb-card">
+      <h3>Department</h3>
+      <label class="sb-row"><input type="checkbox" data-cat="Books" checked/> Books</label>
+      <label class="sb-row"><input type="checkbox" data-cat="Electronics" checked/> Electronics</label>
+      <label class="sb-row"><input type="checkbox" data-cat="Furniture" checked/> Furniture</label>
+      <label class="sb-row"><input type="checkbox" data-cat="Notes" checked/> Notes</label>
+    </div>
+    <div class="sb-card">
+      <h3>Max Price</h3>
+      <input type="range" class="price-slider" id="priceSlider" min="0" max="50000" value="50000"/>
+      <p class="price-val">Up to: <strong id="priceVal">₹50,000</strong></p>
+    </div>
+    <div class="sb-card">
+      <h3>Avg. Customer Review</h3>
+      <div class="star-row on" data-min="0"><span class="st">★★★★★</span> All Stars</div>
+      <div class="star-row" data-min="4"><span class="st">★★★★☆</span> 4 &amp; Up</div>
+      <div class="star-row" data-min="4.5"><span class="st">★★★★½</span> 4.5 &amp; Up</div>
+    </div>
+    <div class="sb-card">
+      <h3>Availability</h3>
+      <label class="sb-row"><input type="checkbox" id="inStockOnly"/> In Stock Only</label>
+      <label class="sb-row"><input type="checkbox" id="primeOnly"/> ✦ Prime Eligible</label>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="cat-pills" role="group" aria-label="Category filter">
+      <button class="pill on" data-cat="All">All Products</button>
+      <button class="pill" data-cat="Books">📚 Books</button>
+      <button class="pill" data-cat="Electronics">⚡ Electronics</button>
+      <button class="pill" data-cat="Furniture">🪑 Furniture</button>
+      <button class="pill" data-cat="Notes">📝 Notes</button>
+    </div>
+    <div class="toolbar">
+      <p class="res-count" id="resCount">Showing <strong>0</strong> products</p>
+      <select class="sort-sel" id="sortSel" aria-label="Sort">
+        <option value="featured">Sort: Featured</option>
+        <option value="price-asc">Price: Low to High</option>
+        <option value="price-desc">Price: High to Low</option>
+        <option value="rating">Avg. Customer Review</option>
+      </select>
+    </div>
+    <div class="grid" id="grid"></div>
+  </main>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="ft-back">▲ Back to top</div>
+  <div class="ft-cols">
+    <div class="ft-col"><h4>Get to Know Us</h4><a href="#">About ShopGrid</a><a href="#">Careers</a><a href="#">Press Releases</a><a href="#">Investor Relations</a></div>
+    <div class="ft-col"><h4>Make Money with Us</h4><a href="#">Sell on ShopGrid</a><a href="#">Become an Affiliate</a><a href="#">Advertise Your Products</a></div>
+    <div class="ft-col"><h4>Delivery &amp; Returns</h4><a href="#">Track Your Order</a><a href="#">Returns Centre</a><a href="#">Shipping Rates &amp; Policies</a></div>
+    <div class="ft-col"><h4>Let Us Help You</h4><a href="#">Help Centre</a><a href="#">Contact Us</a><a href="#">Accessibility</a></div>
+  </div>
+  <div class="ft-bottom">© 2026 ShopGrid, Inc. All rights reserved. &nbsp;|&nbsp; <a href="#" style="color:rgba(255,255,255,.5)">Conditions of Use</a> &nbsp;|&nbsp; <a href="#" style="color:rgba(255,255,255,.5)">Privacy Notice</a></div>
+</footer>
+
+<script>
+// Real product images from Unsplash (free, no API key needed)
+const products = [
+  { id:1,  title:"The Pragmatic Programmer 20th Anniversary",  price:2499,  was:3299,  seller:"TechBooks Co.",  cat:"Books",       img:"https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&h=400&fit=crop", rating:4.8, reviews:312,  badge:"sale", prime:true,  inStock:true  },
+  { id:2,  title:"Clean Code: A Handbook of Agile Software",   price:2899,  was:null,  seller:"DevShelf",       cat:"Books",       img:"https://images.unsplash.com/photo-1532012197267-da84d127e765?w=400&h=400&fit=crop", rating:4.7, reviews:289,  badge:"top",  prime:true,  inStock:true  },
+  { id:3,  title:"Atomic Habits — James Clear",                price:399,   was:599,   seller:"MindReads",      cat:"Books",       img:"https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400&h=400&fit=crop", rating:4.9, reviews:1540, badge:"top",  prime:true,  inStock:true  },
+  { id:4,  title:"Design Patterns: Gang of Four",              price:3499,  was:null,  seller:"TechBooks Co.",  cat:"Books",       img:"https://images.unsplash.com/photo-1589998059171-988d887df646?w=400&h=400&fit=crop", rating:4.6, reviews:198,  badge:null,   prime:false, inStock:true  },
+  { id:5,  title:"You Don't Know JS: Scope & Closures",        price:1799,  was:2499,  seller:"JSMasters",      cat:"Books",       img:"https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&h=400&fit=crop", rating:4.7, reviews:175,  badge:"sale", prime:false, inStock:true  },
+  { id:6,  title:"Sony WH-1000XM5 Wireless Earbuds",          price:24990, was:34990, seller:"SoundWave",      cat:"Electronics", img:"https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop", rating:4.5, reviews:4210, badge:"sale", prime:true,  inStock:true  },
+  { id:7,  title:"Keychron K2 Mechanical Keyboard",           price:8999,  was:11999, seller:"TypeMaster",     cat:"Electronics", img:"https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400&h=400&fit=crop", rating:4.7, reviews:3670, badge:"sale", prime:true,  inStock:true  },
+  { id:8,  title:"Anker 7-in-1 USB-C Hub",                    price:3499,  was:null,  seller:"ConnectAll",     cat:"Electronics", img:"https://images.unsplash.com/photo-1625842268584-8f3296236761?w=400&h=400&fit=crop", rating:4.4, reviews:2150, badge:"new",  prime:false, inStock:true  },
+  { id:9,  title:"Logitech 4K Pro Webcam",                    price:7499,  was:9999,  seller:"VisionTech",     cat:"Electronics", img:"https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=400&h=400&fit=crop", rating:4.6, reviews:1830, badge:"sale", prime:true,  inStock:false },
+  { id:10, title:"BenQ ScreenBar Smart LED Desk Lamp",        price:4299,  was:null,  seller:"BrightHome",     cat:"Electronics", img:"https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=400&h=400&fit=crop", rating:4.3, reviews:1420, badge:"new",  prime:false, inStock:true  },
+  { id:11, title:"Green Soul Ergonomic Office Chair",         price:18999, was:24999, seller:"ComfortZone",    cat:"Furniture",   img:"https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=400&fit=crop", rating:4.8, reviews:2560, badge:"sale", prime:true,  inStock:true  },
+  { id:12, title:"Flexispot Electric Standing Desk 140cm",    price:32999, was:null,  seller:"WorkSmart",      cat:"Furniture",   img:"https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=400&h=400&fit=crop", rating:4.7, reviews:1890, badge:"top",  prime:true,  inStock:true  },
+  { id:13, title:"Wakefit 5-Tier Bookshelf",                  price:4999,  was:6999,  seller:"HomeStyle",      cat:"Furniture",   img:"https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=400&fit=crop", rating:4.5, reviews:1340, badge:"sale", prime:false, inStock:true  },
+  { id:14, title:"Wooden Minimalist Bedside Table",           price:3799,  was:null,  seller:"NordicHome",     cat:"Furniture",   img:"https://images.unsplash.com/photo-1540518614846-7eded433c457?w=400&h=400&fit=crop", rating:4.4, reviews:970,  badge:"new",  prime:false, inStock:false },
+  { id:15, title:"CS101 Complete Lecture Notes Bundle",       price:299,   was:null,  seller:"StudyHub",       cat:"Notes",       img:"https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=400&h=400&fit=crop", rating:4.2, reviews:880,  badge:null,   prime:false, inStock:true  },
+  { id:16, title:"Data Structures & Algorithms Notes",        price:449,   was:null,  seller:"CodeNotes",      cat:"Notes",       img:"https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=400&h=400&fit=crop", rating:4.5, reviews:1120, badge:"top",  prime:false, inStock:true  },
+  { id:17, title:"Calculus Cheat Sheet — Full Coverage",      price:149,   was:null,  seller:"MathPro",        cat:"Notes",       img:"https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=400&h=400&fit=crop", rating:4.3, reviews:760,  badge:null,   prime:false, inStock:true  },
+  { id:18, title:"Biology Complete Study Notes A-Level",      price:599,   was:799,   seller:"ScienceDesk",    cat:"Notes",       img:"https://images.unsplash.com/photo-1532094349884-543559059a7b?w=400&h=400&fit=crop", rating:4.6, reviews:950,  badge:"sale", prime:false, inStock:true  },
+];
+
+function stars(r){const f=Math.floor(r),h=r%1>=.5?1:0,e=5-f-h;return'★'.repeat(f)+(h?'½':'')+('☆'.repeat(e))}
+
+let cart=0;
+function addCart(btn){
+  cart++;document.getElementById('cartCount').textContent=cart;
+  btn.textContent='✓ Added';btn.classList.add('done');
+  setTimeout(()=>{btn.textContent='Add to Cart';btn.classList.remove('done');},1600);
+}
+function toggleWish(btn){btn.classList.toggle('on');btn.textContent=btn.classList.contains('on')?'♥':'♡';}
+
+function render(list){
+  const g=document.getElementById('grid');
+  document.getElementById('resCount').innerHTML=`Showing <strong>${list.length}</strong> product${list.length!==1?'s':''}`;
+  if(!list.length){g.innerHTML=`<div class="empty"><span>🔍</span><h3>No products found</h3><p>Try adjusting your search or filters.</p></div>`;return;}
+  g.innerHTML=list.map(p=>{
+    const save=p.was?Math.round((1-p.price/p.was)*100):0;
+    const bHtml=p.badge?`<span class="cbadge b-${p.badge}">${p.badge==='sale'?'Sale':p.badge==='new'?'New':'Top Pick'}</span>`:'';
+    const wasHtml=p.was?`<span class="was">$₹\${p.was.toLocaleString('en-IN')}</span><span class="off">-${save}%</span>`:'';
+    const primeHtml=p.prime?`<div class="prime">✦ Prime FREE Delivery</div>`:'';
+    const stockHtml=!p.inStock?`<div class="low">⚠ Only 2 left in stock</div>`:'';
+    const cents=p.price.toFixed(2).split('.');
+    return`<article class="card">
+      <div class="card-img">
+        ${bHtml}
+        <button class="wish" onclick="toggleWish(this)" aria-label="Wishlist">♡</button>
+        <img src="${p.img}" alt="${p.title}" loading="lazy" onerror="this.style.display='none';this.parentNode.style.fontSize='3rem';this.parentNode.innerHTML+='📦'"/>
+      </div>
+      <div class="card-body">
+        <span class="card-cat">${p.cat}</span>
+        <h2 class="card-title">${p.title}</h2>
+        <p class="card-seller">by <a href="#">${p.seller}</a></p>
+        <div class="rating-row">
+          <span class="stars" aria-label="${p.rating} stars">${stars(p.rating)}</span>
+          <span class="rcount">${p.rating} (${p.reviews.toLocaleString('en-IN')})</span>
+        </div>
+        <div class="price-row">
+          <span class="price"><sup>$</sup>${cents[0]}<sup>.${cents[1]}</sup></span>
+          ${wasHtml}
+        </div>
+        ${primeHtml}${stockHtml}
+        <div class="card-actions">
+          <button class="btn-cart" onclick="addCart(this)">Add to Cart</button>
+          <button class="btn-buy">Buy Now</button>
+        </div>
+      </div>
+    </article>`;
+  }).join('');
+}
+
+let activeCat='All', query='', maxP=50000, minR=0;
+
+function filter(){
+  let list=products.filter(p=>{
+    const catOk=activeCat==='All'||p.cat===activeCat;
+    const qOk=!query||p.title.toLowerCase().includes(query)||p.seller.toLowerCase().includes(query);
+    const priceOk=p.price<=maxP;
+    const rOk=p.rating>=minR;
+    const stockOk=!document.getElementById('inStockOnly').checked||p.inStock;
+    const primeOk=!document.getElementById('primeOnly').checked||p.prime;
+    return catOk&&qOk&&priceOk&&rOk&&stockOk&&primeOk;
+  });
+  const s=document.getElementById('sortSel').value;
+  if(s==='price-asc')list.sort((a,b)=>a.price-b.price);
+  if(s==='price-desc')list.sort((a,b)=>b.price-a.price);
+  if(s==='rating')list.sort((a,b)=>b.rating-a.rating);
+  render(list);
+}
+
+document.querySelectorAll('.pill').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.pill').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on');activeCat=b.dataset.cat;filter();
+}));
+document.getElementById('searchInput').addEventListener('input',e=>{query=e.target.value.toLowerCase().trim();filter();});
+document.getElementById('priceSlider').addEventListener('input',e=>{maxP=+e.target.value;document.getElementById('priceVal').textContent='₹'+Number(maxP).toLocaleString('en-IN');filter();});
+document.querySelectorAll('.star-row').forEach(r=>r.addEventListener('click',()=>{
+  document.querySelectorAll('.star-row').forEach(x=>x.classList.remove('on'));
+  r.classList.add('on');minR=+r.dataset.min;filter();
+}));
+document.getElementById('inStockOnly').addEventListener('change',filter);
+document.getElementById('primeOnly').addEventListener('change',filter);
+document.getElementById('sortSel').addEventListener('change',filter);
+filter();
+</script>
+</body>
+</html>
+

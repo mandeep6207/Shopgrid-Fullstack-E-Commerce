@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Product — ShopGrid India</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<div id="navbar-placeholder"></div>
+
+<div class="breadcrumb-bar">
+  <div class="breadcrumb-inner">
+    <a href="index.html">Home</a> <span>›</span>
+    <a href="shop.html">Shop</a> <span>›</span>
+    <span id="bc-name">Product</span>
+  </div>
+</div>
+
+<div class="pdp-layout" id="pdpLayout">
+  <!-- Gallery -->
+  <div class="pdp-gallery">
+    <img id="mainImg" src="" alt="" class="pdp-main-img"/>
+    <div class="pdp-thumbs" id="thumbs"></div>
+  </div>
+  <!-- Info -->
+  <div class="pdp-info">
+    <div id="pdpBadges" class="pdp-badges"></div>
+    <h1 id="pdpName" class="pdp-name"></h1>
+    <div class="pdp-rating-row">
+      <span id="pdpStars" class="stars"></span>
+      <span id="pdpRating" class="rcount"></span>
+      <span class="verified">✔ Verified Ratings</span>
+    </div>
+    <div class="pdp-price-row">
+      <span id="pdpPrice" class="pdp-price"></span>
+      <span id="pdpWas" class="pdp-was"></span>
+      <span id="pdpDisc" class="pdp-disc"></span>
+    </div>
+    <p id="pdpDesc" class="pdp-desc"></p>
+    <ul id="pdpFeatures" class="pdp-features"></ul>
+    <div class="pdp-delivery">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+      Free delivery to <strong>Bhilai, CG 490001</strong> — Tomorrow
+    </div>
+    <div class="pdp-seller" id="pdpSeller"></div>
+    <div class="pdp-qty-row">
+      <span>Quantity</span>
+      <div class="qty-ctrl">
+        <button onclick="changeQty(-1)">−</button>
+        <span id="pdpQty">1</span>
+        <button onclick="changeQty(1)">+</button>
+      </div>
+      <span id="pdpStock" class="stock-info"></span>
+    </div>
+    <div class="pdp-actions">
+      <button class="btn btn-primary" id="addCartBtn" onclick="addToCartPDP()">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
+        Add to Cart
+      </button>
+      <button class="btn btn-secondary" onclick="buyNow()">Buy Now</button>
+      <button class="btn btn-outline" id="wishBtn" onclick="toggleWishPDP()">♡ Wishlist</button>
+      <button class="btn btn-outline" onclick="shareProduct()">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        Share
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- RELATED PRODUCTS -->
+<section class="section-wrap" style="margin-top:40px">
+  <div class="section-head"><h2>You May Also Like</h2><a href="shop.html" class="see-all">See All →</a></div>
+  <div class="product-row" id="relatedRow"></div>
+</section>
+
+<div id="footer-placeholder"></div>
+<div id="cart-drawer-placeholder"></div>
+<div class="toast hidden" id="toast"></div>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+<script>
+  loadNavbar(); loadFooter(); loadCartDrawer();
+  const inr = n => '₹' + Number(n).toLocaleString('en-IN');
+  const starsHtml = r => { const f=Math.floor(r),h=r%1>=.5?1:0,e=5-f-h; return '★'.repeat(f)+(h?'½':'')+('☆'.repeat(e)); };
+
+  const id = +new URLSearchParams(location.search).get('id');
+  const p = products.find(x=>x.id===id);
+  let qty = 1, wished = false;
+
+  if(!p) { document.getElementById('pdpLayout').innerHTML='<div class="empty" style="grid-column:1/-1"><span>😕</span><h3>Product not found</h3><a href="shop.html" class="btn btn-primary">Back to Shop</a></div>'; }
+  else {
+    document.title = p.title + ' — ShopGrid India';
+    document.getElementById('bc-name').textContent = p.title.substring(0,40)+'…';
+
+    const save = p.was?Math.round((1-p.price/p.was)*100):0;
+    document.getElementById('pdpName').textContent = p.title;
+    document.getElementById('pdpStars').textContent = starsHtml(p.rating);
+    document.getElementById('pdpRating').textContent = `${p.rating} · ${p.reviews.toLocaleString('en-IN')} ratings`;
+    document.getElementById('pdpPrice').textContent = inr(p.price);
+    document.getElementById('pdpWas').textContent = p.was?inr(p.was):'';
+    document.getElementById('pdpDisc').textContent = p.was?`-${save}% off`:'';
+    document.getElementById('pdpDesc').textContent = p.desc||'';
+    document.getElementById('pdpStock').textContent = !p.inStock?'⚠ Only 2 left in stock':'';
+    document.getElementById('pdpSeller').innerHTML = `Sold by <strong>${p.seller}</strong> &nbsp;·&nbsp; Seller Rating: <strong>${p.sellerRating}★</strong>`;
+
+    const badges = document.getElementById('pdpBadges');
+    if(p.badge) badges.innerHTML += `<span class="cbadge b-${p.badge}">${p.badge==='sale'?'Sale':p.badge==='new'?'New':'Top Pick'}</span>`;
+    if(p.prime) badges.innerHTML += `<span class="prime-badge">✦ Prime</span>`;
+
+    const feats = document.getElementById('pdpFeatures');
+    (p.features||[]).forEach(f=>{ const li=document.createElement('li'); li.textContent=f; feats.appendChild(li); });
+
+    const imgs = p.imgs||[p.img];
+    document.getElementById('mainImg').src = imgs[0];
+    document.getElementById('thumbs').innerHTML = imgs.map((src,i)=>
+      `<img class="pdp-thumb${i===0?' active':''}" src="${src}" alt="" onclick="switchImg(this,'${src}')"/>`
+    ).join('');
+
+    // Related
+    const related = products.filter(x=>x.cat===p.cat && x.id!==p.id).slice(0,8);
+    document.getElementById('relatedRow').innerHTML = related.map(r=>{
+      const sv=r.was?Math.round((1-r.price/r.was)*100):0;
+      return `<a href="product.html?id=${r.id}" class="mini-card">
+        <div class="mini-img"><img src="${r.img}" alt="${r.title}" loading="lazy" onerror="this.style.display='none'"/>
+          ${r.badge?`<span class="cbadge b-${r.badge}">${r.badge==='sale'?'Sale':r.badge==='new'?'New':'Top'}</span>`:''}
+        </div>
+        <div class="mini-body">
+          <h3 class="mini-title">${r.title}</h3>
+          <div class="rating-row"><span class="stars">${starsHtml(r.rating)}</span></div>
+          <div class="price-row"><span class="price">${inr(r.price)}</span>${r.was?`<span class="off">-${sv}%</span>`:''}</div>
+        </div>
+      </a>`;
+    }).join('');
+  }
+
+  function switchImg(el, src) {
+    document.getElementById('mainImg').src=src;
+    document.querySelectorAll('.pdp-thumb').forEach(t=>t.classList.remove('active'));
+    el.classList.add('active');
+  }
+  function changeQty(d) { qty=Math.max(1,qty+d); document.getElementById('pdpQty').textContent=qty; }
+  function addToCartPDP() {
+    if(!p) return;
+    addToCartItem(p,qty);
+    const btn=document.getElementById('addCartBtn');
+    btn.textContent='✓ Added to Cart'; btn.style.background='#1a9e5c'; btn.style.color='#fff';
+    setTimeout(()=>{btn.innerHTML='<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg> Add to Cart';btn.style.background='';btn.style.color='';},2000);
+  }
+  function buyNow() { if(!p) return; addToCartItem(p,qty); location.href='cart.html'; }
+  function toggleWishPDP() {
+    wished=!wished;
+    const btn=document.getElementById('wishBtn');
+    btn.textContent=wished?'♥ Wishlisted':'♡ Wishlist';
+    btn.style.color=wished?'#e74c3c':'';
+    showToast(wished?'♥ Added to Wishlist':'Removed from Wishlist');
+  }
+  function shareProduct() {
+    if(navigator.share) navigator.share({title:p?.title,url:location.href});
+    else { navigator.clipboard?.writeText(location.href); showToast('🔗 Link copied!'); }
+  }
+</script>
+</body>
+</html>

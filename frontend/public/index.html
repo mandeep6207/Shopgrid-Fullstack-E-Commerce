@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>ShopGrid India — Online Shopping</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<div id="navbar-placeholder"></div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-tag">Limited Time Offer</div>
+    <h1>Discover <span>Top Products</span><br/>at Unbeatable Prices</h1>
+    <p>Books, Electronics, Furniture & more — delivered to Bhilai, Chhattisgarh</p>
+    <div class="hero-chips">
+      <span class="chip hot">Up to 40% OFF</span>
+      <span class="chip">✦ Free Shipping</span>
+      <span class="chip">⚡ Same-Day Delivery</span>
+      <span class="chip">🔒 Secure Payments</span>
+    </div>
+    <a href="shop.html" class="btn btn-hero">Shop All Deals →</a>
+  </div>
+  <div class="hero-right">
+    <div class="hero-cards">
+      <div class="hero-card"><img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200&h=200&fit=crop" alt=""/><span>₹24,990</span></div>
+      <div class="hero-card"><img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=200&h=200&fit=crop" alt=""/><span>₹2,499</span></div>
+      <div class="hero-card"><img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=200&h=200&fit=crop" alt=""/><span>₹18,999</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- CATEGORY TILES -->
+<section class="section-wrap">
+  <div class="section-head"><h2>Shop by Category</h2><a href="shop.html" class="see-all">See All →</a></div>
+  <div class="cat-tiles">
+    <a href="shop.html?cat=Electronics" class="cat-tile"><img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=100&h=100&fit=crop" alt=""/><span>Electronics</span></a>
+    <a href="shop.html?cat=Books" class="cat-tile"><img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=100&h=100&fit=crop" alt=""/><span>Books</span></a>
+    <a href="shop.html?cat=Furniture" class="cat-tile"><img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=100&h=100&fit=crop" alt=""/><span>Furniture</span></a>
+    <a href="shop.html?cat=Watches" class="cat-tile"><img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=100&h=100&fit=crop" alt=""/><span>Watches</span></a>
+    <a href="shop.html?cat=Clothing" class="cat-tile"><img src="https://images.unsplash.com/photo-1542272604-787c3835535d?w=100&h=100&fit=crop" alt=""/><span>Clothing</span></a>
+    <a href="shop.html?cat=Footwear" class="cat-tile"><img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=100&h=100&fit=crop" alt=""/><span>Footwear</span></a>
+    <a href="shop.html?cat=Beauty" class="cat-tile"><img src="https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=100&h=100&fit=crop" alt=""/><span>Beauty</span></a>
+    <a href="shop.html?cat=Bags" class="cat-tile"><img src="https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=100&h=100&fit=crop" alt=""/><span>Bags</span></a>
+    <a href="shop.html?cat=Notes" class="cat-tile"><img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=100&h=100&fit=crop" alt=""/><span>Notes</span></a>
+  </div>
+</section>
+
+<!-- DEALS OF THE DAY -->
+<section class="section-wrap bg-light">
+  <div class="section-head"><h2>🔥 Deals of the Day</h2><a href="shop.html?filter=sale" class="see-all">See All →</a></div>
+  <div class="product-row" id="deals-row"></div>
+</section>
+
+<!-- TOP RATED -->
+<section class="section-wrap">
+  <div class="section-head"><h2>⭐ Top Rated Products</h2><a href="shop.html?sort=rating" class="see-all">See All →</a></div>
+  <div class="product-row" id="top-row"></div>
+</section>
+
+<!-- PROMO BANNERS -->
+<section class="promo-banners">
+  <div class="promo-banner" style="background:linear-gradient(135deg,#1B2A4A,#0f3460)">
+    <div><h3>Electronics Sale</h3><p>Up to 40% off on top brands</p><a href="shop.html?cat=Electronics" class="btn btn-sm">Shop Now</a></div>
+    <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=180&h=180&fit=crop" alt=""/>
+  </div>
+  <div class="promo-banner" style="background:linear-gradient(135deg,#1a4a1b,#0f6010)">
+    <div><h3>Books Bonanza</h3><p>Bestsellers starting at ₹199</p><a href="shop.html?cat=Books" class="btn btn-sm">Shop Now</a></div>
+    <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=180&h=180&fit=crop" alt=""/>
+  </div>
+  <div class="promo-banner" style="background:linear-gradient(135deg,#4a1a1a,#8b0000)">
+    <div><h3>Furniture Fest</h3><p>Home makeover deals</p><a href="shop.html?cat=Furniture" class="btn btn-sm">Shop Now</a></div>
+    <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=180&h=180&fit=crop" alt=""/>
+  </div>
+</section>
+
+<!-- NEW ARRIVALS -->
+<section class="section-wrap">
+  <div class="section-head"><h2>🆕 New Arrivals</h2><a href="shop.html?filter=new" class="see-all">See All →</a></div>
+  <div class="product-row" id="new-row"></div>
+</section>
+
+<div id="footer-placeholder"></div>
+<div id="cart-drawer-placeholder"></div>
+<div class="toast hidden" id="toast"></div>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+<script>
+  loadNavbar(); loadFooter(); loadCartDrawer();
+  const inr = n => '₹' + Number(n).toLocaleString('en-IN');
+  const starsHtml = r => { const f=Math.floor(r),h=r%1>=.5?1:0,e=5-f-h; return '★'.repeat(f)+(h?'½':'')+('☆'.repeat(e)); };
+
+  function miniCard(p) {
+    const save = p.was ? Math.round((1-p.price/p.was)*100) : 0;
+    return `<a href="product.html?id=${p.id}" class="mini-card">
+      <div class="mini-img"><img src="${p.img}" alt="${p.title}" loading="lazy" onerror="this.style.display='none'"/>
+        ${p.badge?`<span class="cbadge b-${p.badge}">${p.badge==='sale'?'Sale':p.badge==='new'?'New':'Top'}</span>`:''}
+      </div>
+      <div class="mini-body">
+        <p class="mini-cat">${p.cat}</p>
+        <h3 class="mini-title">${p.title}</h3>
+        <div class="rating-row"><span class="stars">${starsHtml(p.rating)}</span><span class="rcount">(${p.reviews.toLocaleString('en-IN')})</span></div>
+        <div class="price-row">
+          <span class="price">${inr(p.price)}</span>
+          ${p.was?`<span class="was">${inr(p.was)}</span><span class="off">-${save}%</span>`:''}
+        </div>
+        <button class="btn-cart" onclick="event.preventDefault();quickAdd(${p.id},this)">Add to Cart</button>
+      </div>
+    </a>`;
+  }
+
+  function quickAdd(id, btn) {
+    const p = products.find(x=>x.id===id); if(!p) return;
+    addToCartItem(p,1);
+    btn.textContent='✓ Added'; btn.classList.add('done');
+    setTimeout(()=>{btn.textContent='Add to Cart';btn.classList.remove('done');},1500);
+  }
+
+  document.getElementById('deals-row').innerHTML = products.filter(p=>p.badge==='sale').slice(0,8).map(miniCard).join('');
+  document.getElementById('top-row').innerHTML = [...products].sort((a,b)=>b.rating-a.rating).slice(0,8).map(miniCard).join('');
+  document.getElementById('new-row').innerHTML = products.filter(p=>p.badge==='new').concat(products.filter(p=>p.badge==='top')).slice(0,8).map(miniCard).join('');
+</script>
+</body>
+</html>

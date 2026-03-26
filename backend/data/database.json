@@ -1,0 +1,40 @@
+{
+  "users": [
+    {
+      "id": "3af150e6-016d-4b58-9cdb-a3cb7237d864",
+      "firstName": "Test",
+      "lastName": "User",
+      "email": "test@example.com",
+      "phone": "+919999999999",
+      "passwordHash": "$2a$10$0dZG83BsoBuJBEq7Z17zlunu6OGioCBOaUXNN3OGEc3EnS6eebsra",
+      "createdAt": "2026-03-26T18:15:35.745Z"
+    }
+  ],
+  "carts": {
+    "3af150e6-016d-4b58-9cdb-a3cb7237d864": []
+  },
+  "orders": [
+    {
+      "id": "SG-48935774-665",
+      "internalId": "e3d6d32d-51e0-441e-ab55-cdbf4dcbb2f8",
+      "userId": "3af150e6-016d-4b58-9cdb-a3cb7237d864",
+      "items": [
+        {
+          "price": 100,
+          "title": "Sample",
+          "id": 1,
+          "qty": 2
+        }
+      ],
+      "address": {
+        "fullAddress": "Bhilai",
+        "name": "Test User",
+        "phone": "9999999999"
+      },
+      "payment": "COD",
+      "total": 200,
+      "status": "confirmed",
+      "createdAt": "2026-03-26T18:15:35.774Z"
+    }
+  ]
+}
