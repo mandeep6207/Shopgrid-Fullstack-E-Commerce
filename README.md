@@ -1,22 +1,26 @@
 # ShopGrid Fullstack E-Commerce
 
-ShopGrid is a full-stack e-commerce web application with a responsive storefront and an Express API backend. The project includes product browsing, category filtering, cart management, account authentication, and order placement with persisted data.
+ShopGrid is a full-stack e-commerce web application with a **premium, modern UI** and a responsive storefront powered by an Express API backend. The project includes product browsing, category filtering, cart management, account authentication, order placement, and AI-powered smart styling recommendations.
 
 ## Features
 
-- Multi-page storefront: home, shop, product, cart, checkout, and login/register
-- Category and search-based product discovery
-- JWT-based authentication (register, login, protected routes)
-- User-specific cart sync with backend storage
-- Order creation and order history APIs
-- Shared product catalog across frontend and backend
+- **Multi-page storefront**: home, shop, product, cart, checkout, and login/register
+- **AI Smart Stylist**: Upload outfit photos → get personalized product recommendations
+- **Category and search-based product discovery**
+- **JWT-based authentication** (register, login, protected routes)
+- **User-specific cart sync** with backend storage
+- **Order creation and order history APIs**
+- **Premium modern UI** with smooth animations, hover effects, and Apple-level design
+- **Shared product catalog** across frontend and backend
 
 ## Tech Stack
 
-- Frontend: HTML, CSS, Vanilla JavaScript
-- Backend: Node.js, Express
-- Authentication: JSON Web Tokens (JWT), bcryptjs
-- Data layer: file-based JSON persistence
+- **Frontend**: HTML, CSS, Vanilla JavaScript (no frameworks)
+- **Backend**: Node.js, Express
+- **Authentication**: JSON Web Tokens (JWT), bcryptjs
+- **AI Features**: OpenAI Vision API (GPT-4 Vision)
+- **Data layer**: File-based JSON persistence
+- **Styling**: Modern CSS with animations, gradients, and shadows
 
 ## Project Structure
 
