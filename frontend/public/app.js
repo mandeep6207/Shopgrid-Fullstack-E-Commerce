@@ -162,6 +162,7 @@ function loadNavbar() {
       <a href="shop.html?cat=Electronics" class="snav">Electronics</a>
       <a href="shop.html?cat=Books" class="snav">Books</a>
       <a href="shop.html?cat=Furniture" class="snav">Furniture</a>
+      <a href="stylist.html" class="snav accent">✨ AI Stylist</a>
       <a href="shop.html?filter=sale" class="snav accent">🔥 Flash Sale</a>
     </div>
   </nav>

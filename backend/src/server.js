@@ -7,6 +7,7 @@ const authRoutes = require("./routes/auth");
 const productsRoutes = require("./routes/products");
 const cartRoutes = require("./routes/cart");
 const ordersRoutes = require("./routes/orders");
+const aiRoutes = require("./routes/ai");
 
 dotenv.config();
 
@@ -26,6 +27,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/products", productsRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/orders", ordersRoutes);
+app.use("/api/ai", aiRoutes);
 
 app.use(express.static(frontendPath));
 
