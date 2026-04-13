@@ -1,4 +1,4 @@
-# ShopGrid Fullstack E-Commerce
+# ShopGrid Fullstack E-Commerce Website 
 
 ShopGrid is a full-stack e-commerce web application with a **premium, modern UI** and a responsive storefront powered by an Express API backend. The project includes product browsing, category filtering, cart management, account authentication, order placement, and AI-powered smart styling recommendations.
 
